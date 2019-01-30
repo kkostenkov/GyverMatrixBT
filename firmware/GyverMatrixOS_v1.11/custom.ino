@@ -6,7 +6,7 @@
 #define SHOW_TEXT_ONCE 1    // показывать бегущий текст только 1 раз
 
 // подключаем внешние файлы с картинками
-//#include "bitmap2.h"
+#include "mixImages.h"
 
 
 /*
@@ -63,33 +63,41 @@
 
 // не забудьте указать количество режимов для корректного переключения с последнего на первый
 #define MODES_AMOUNT 28   // количество кастомных режимов (которые переключаются сами или кнопкой)
-
+bool randomPicturesInited = false;
 void customModes() {
   switch (thisMode) {
 
-    case 0: fillString("КРАСНЫЙ", CRGB::Red);
+    case 0: fillString("hello", CRGB::Red);
       break;
-    case 1: fillString("РАДУГА", 1);
+    case 1: fillString("NIVAL inc.", 1);
       break;
-    case 2: fillString("RGB LED", 2);
+    case 2: fillString("kiparis87", 2);
+      randomPicturesInited = false;
       break;
-    case 3: madnessNoise();
+    case 3: RandomPictures(); // Три раза в день меняет фрейм на случайный
       break;
-    case 4: cloudNoise();
+    case 4: cloudNoise(); //выпилено
+      thisMode++;
       break;
-    case 5: lavaNoise();
+    case 5: lavaNoise(); //выпилено
+      thisMode++;
       break;
-    case 6: plasmaNoise();
+    case 6: plasmaNoise(); //выпилено
+      thisMode++;
       break;
-    case 7: rainbowNoise();
+    case 7: rainbowNoise(); //выпилено
+      thisMode++;
       break;
     case 8: rainbowStripeNoise();
+      thisMode++;
       break;
-    case 9: zebraNoise();
+    case 9: SlideShow(); // Бомбит фреймами подряд часто.
       break;
-    case 10: forestNoise();
+    case 10: forestNoise(); //выпилено
+      thisMode++;
       break;
-    case 11: oceanNoise();
+    case 11: oceanNoise(); //выпилено
+      thisMode++;
       break;
     case 12: snowRoutine();
       break;
@@ -109,22 +117,27 @@ void customModes() {
       break;
     case 20: fireRoutine();
       break;
-    case 21: snakeRoutine();
+    case 21: snakeRoutine(); //выпилено
+      thisMode++;
       break;
-    case 22: tetrisRoutine();
+    case 22: tetrisRoutine(); //выпилено
+      thisMode++;
       break;
-    case 23: mazeRoutine();
+    case 23: mazeRoutine(); //выпилено
+      thisMode++;
       break;
-    case 24: runnerRoutine();
+    case 24: runnerRoutine(); //выпилено
+      thisMode++;
       break;
-    case 25: flappyRoutine();
+    case 25: flappyRoutine(); //выпилено
+      thisMode++;
       break;
-    case 26: arkanoidRoutine();
+    case 26: arkanoidRoutine(); //выпилено
+      thisMode++;
       break;
-    case 27: clockRoutine();
+    case 27: clockRoutine(); //выпилено
+      thisMode = 0;
       break;
-
-
   }
 
 }
@@ -140,29 +153,43 @@ void loadImage(uint16_t (*frame)[WIDTH]) {
   // 3) gammaCorrection - проводим коррекцию цвета для более корректного отображения
 }
 timerMinim gifTimer(D_GIF_SPEED);
+timerMinim randomPicTimer(D_RANDOM_PIC_SPEED);
 
 // ********************** ПРИМЕРЫ ВЫВОДА КАРТИНОК ***********************
 
 // Внимание! Если размер матрицы не совпадает с исходным размером матрицы в скетче
 // (если вы только что  его скачали), то нужно удалить/закомментировать данные функции!
 //
-/*
+
   // показать картинку
   void imageRoutine1() {
   if (loadingFlag) {
     loadingFlag = false;
-    loadImage(frame00);
+    loadImage(frame0);
   }
   }
 
-  void animation1() {
+  void SlideShow() {
   if (gifTimer.isReady()) {
     frameNum++;
-    if (frameNum >= sizeof(framesArray)) frameNum = 0;
+    int arraySize = sizeof(framesArray) / sizeof(framesArray[0]);
+    if (frameNum >= arraySize) frameNum = 0;
     loadImage(framesArray[frameNum]);
   }
   }
-*/
+  
+  void RandomPictures() {
+  if (randomPicTimer.isReady() || !randomPicturesInited) {
+    randomPicturesInited = true;
+    int arraySize = sizeof(framesArray) / sizeof(framesArray[0]);
+    int frameIndex = random(0, arraySize);
+    if (frameIndex >= arraySize) frameIndex = random(0, arraySize - 1);
+    loadImage(framesArray[frameIndex]);
+  }
+  }
+
+  
+
 
 // ********************* ОСНОВНОЙ ЦИКЛ РЕЖИМОВ *******************
 #if (SMOOTH_CHANGE == 1)
