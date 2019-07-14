@@ -158,7 +158,7 @@ timerMinim gifTimer(D_GIF_SPEED);
   void animation1() {
   if (gifTimer.isReady()) {
     frameNum++;
-    if (frameNum >= sizeof(framesArray)) frameNum = 0;
+    if (frameNum >= size(framesArray)) frameNum = 0;
     loadImage(framesArray[frameNum]);
   }
   }
